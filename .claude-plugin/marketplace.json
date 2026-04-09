@@ -1,0 +1,14 @@
+{
+  "name": "ui-design-skills",
+  "owner": {
+    "name": "rshzrh",
+    "url": "https://github.com/rshzrh"
+  },
+  "plugins": [
+    {
+      "name": "ui-design-skills",
+      "source": "./",
+      "description": "Three slop-free UI skills: ui-web (React + Tailwind + shadcn), ui-ios (SwiftUI), ui-android (Compose + M3)."
+    }
+  ]
+}

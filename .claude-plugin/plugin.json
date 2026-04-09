@@ -1,0 +1,20 @@
+{
+  "name": "ui-design-skills",
+  "version": "0.1.0",
+  "description": "Slop-free UI generation skills for web (React + Tailwind + shadcn/ui), iOS (SwiftUI), and Android (Jetpack Compose + Material 3 Expressive).",
+  "author": "rshzrh",
+  "homepage": "https://github.com/rshzrh/ui-design-skills",
+  "repository": "https://github.com/rshzrh/ui-design-skills",
+  "license": "MIT",
+  "keywords": [
+    "ui",
+    "design",
+    "skills",
+    "react",
+    "tailwind",
+    "shadcn",
+    "swiftui",
+    "jetpack-compose",
+    "material3"
+  ]
+}

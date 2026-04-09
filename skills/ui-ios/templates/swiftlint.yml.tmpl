@@ -1,0 +1,207 @@
+# ui-ios slop-blocking SwiftLint config. Append to your existing .swiftlint.yml
+# (or use as the starting file). Active bans: {{ACTIVE_BANS}}
+#
+# Run with:  swiftlint --strict
+#
+# These custom rules block magic numbers in layout modifiers, hardcoded font sizes,
+# banned copy strings, AI-tell gradients, and buzzwords in code or comments.
+
+opt_in_rules:
+  - empty_count
+  - explicit_init
+  - first_where
+  - sorted_imports
+
+excluded:
+  - .build
+  - DerivedData
+  - Pods
+  - "**/Theme/Tokens.swift"          # Tokens may use literal numbers; that's the point.
+  - "**/Theme/ThemeModifier.swift"
+
+custom_rules:
+
+  # ---- [Ban 3] Magic numbers in layout modifiers ----
+
+  no_magic_padding:
+    name: "Magic .padding() value"
+    regex: '\.padding\((?!.*Theme\.Spacing)(?!.*Theme\.density)[^)]*\b\d+(\.\d+)?\b'
+    message: "Use Theme.Spacing.* instead of a literal in .padding()."
+    severity: error
+
+  no_magic_frame:
+    name: "Magic .frame() value"
+    regex: '\.frame\([^)]*\b(width|height|minHeight|maxHeight|minWidth|maxWidth):\s*\d+(\.\d+)?'
+    message: "Use Theme.Spacing.* (or 44 for the HIG touch-target floor expressed as Theme.Spacing.touchTarget) instead of a literal in .frame()."
+    severity: error
+
+  no_magic_corner_radius:
+    name: "Magic .cornerRadius() value"
+    regex: '\.cornerRadius\(\s*\d'
+    message: "Use Theme.Radius.* instead of a literal in .cornerRadius()."
+    severity: error
+
+  no_magic_rounded_rectangle:
+    name: "Magic RoundedRectangle radius"
+    regex: 'RoundedRectangle\(cornerRadius:\s*\d'
+    message: "Use Theme.Radius.* instead of a literal cornerRadius."
+    severity: error
+
+  # ---- [Ban 3] Hardcoded color literals ----
+
+  no_color_hex_literal:
+    name: "Hex Color literal"
+    regex: 'Color\(\s*hex:'
+    message: "Hex color literals are forbidden. Use a named asset via Theme.Color.* instead."
+    severity: error
+
+  no_color_rgb_literal:
+    name: "RGB Color literal"
+    regex: 'Color\(\s*red:\s*\d'
+    message: "RGB Color literals are forbidden. Use a named asset via Theme.Color.* instead."
+    severity: error
+
+  # ---- [Ban 3] Hardcoded font sizes ----
+
+  no_system_font_size_literal:
+    name: "Hardcoded .system(size:) outside Theme"
+    regex: '\.system\(size:\s*\d'
+    message: "Use Theme.Font.* (which returns Dynamic-Type-aware fonts) instead of .system(size:) literals."
+    severity: error
+
+  # ---- [Ban 4] Default font tells ----
+
+  no_inter_font:
+    name: "Inter font tell"
+    regex: '\.custom\(\s*"Inter'
+    message: "Inter is an AI tell on iOS. Use SF Pro via .system(...) or your anchor's declared custom font."
+    severity: warning
+
+  no_roboto_font:
+    name: "Roboto font tell"
+    regex: '\.custom\(\s*"Roboto'
+    message: "Roboto is an AI tell on iOS. Use SF Pro via .system(...) or your anchor's declared custom font."
+    severity: warning
+
+  # ---- [Ban 1] Generic gradient slop ----
+
+  no_purple_pink_gradient:
+    name: "Purple→Pink gradient slop"
+    regex: 'LinearGradient\([^)]*\.(purple|indigo|violet)[^)]*\.(pink|fuchsia|magenta)'
+    message: "Banned: AI-tell purple→pink gradient. Use a single Theme.Color or your anchor's defined gradient."
+    severity: error
+
+  no_indigo_purple_gradient:
+    name: "Indigo→Purple gradient slop"
+    regex: 'LinearGradient\([^)]*\.indigo[^)]*\.purple'
+    message: "Banned: AI-tell indigo→purple gradient. Use a Theme.Color."
+    severity: error
+
+  # ---- [Ban 5] Material overuse ----
+
+  no_material_on_card:
+    name: "Material on content (warn — verify it's chrome)"
+    regex: '\.background\(\.(ultraThinMaterial|regularMaterial|thinMaterial)\)'
+    message: "Materials are only allowed on chrome (toolbar, sheet, tab bar). Verify this isn't a card or content surface."
+    severity: warning
+
+  # ---- [Ban 2] Lorem ipsum and filler copy ----
+
+  no_lorem_ipsum:
+    name: "Lorem ipsum"
+    regex: '"[^"]*[Ll]orem [Ii]psum[^"]*"'
+    message: "Banned: lorem ipsum. STOP and ask the user for real product copy."
+    severity: error
+
+  no_filler_copy_lightning:
+    name: "Filler copy: lightning fast"
+    regex: '"[^"]*[Ll]ightning [Ff]ast[^"]*"'
+    message: "Banned: filler copy. See copy-voice.md."
+    severity: error
+
+  no_filler_copy_powered_by_ai:
+    name: "Filler copy: Powered by AI"
+    regex: '"[^"]*[Pp]owered by AI[^"]*"'
+    message: "Banned: filler copy. See copy-voice.md."
+    severity: error
+
+  no_filler_copy_built_for_modern:
+    name: "Filler copy: Built for the modern X"
+    regex: '"[^"]*[Bb]uilt for (the modern|iOS)[^"]*"'
+    message: "Banned: filler copy. See copy-voice.md."
+    severity: error
+
+  no_filler_copy_seamless:
+    name: "Filler copy: seamlessly"
+    regex: '"[^"]*[Ss]eamlessly[^"]*"'
+    message: "Banned: filler copy."
+    severity: error
+
+  no_filler_copy_effortlessly:
+    name: "Filler copy: effortlessly"
+    regex: '"[^"]*[Ee]ffortlessly[^"]*"'
+    message: "Banned: filler copy."
+    severity: error
+
+  no_filler_copy_unleash:
+    name: "Filler copy: unleash"
+    regex: '"[^"]*[Uu]nleash[^"]*"'
+    message: "Banned: filler copy."
+    severity: error
+
+  no_generic_cta_get_started:
+    name: "Generic CTA: Get Started"
+    regex: '"\s*Get Started\s*"'
+    message: "Banned: generic CTA. Use a verb-led specific label (e.g., 'Create your free account')."
+    severity: error
+
+  no_generic_cta_learn_more:
+    name: "Generic CTA: Learn More"
+    regex: '"\s*Learn More\s*"'
+    message: "Banned: generic CTA."
+    severity: error
+
+  # ---- [Ban 14] Buzzwords in code or copy ----
+
+  no_buzzword_clean:
+    name: "Buzzword: clean"
+    regex: '\b[Cc]lean\b'
+    message: "Banned buzzword. Replace with a concrete property from your anchor recipe."
+    severity: warning
+    excluded: ".*Tests.*"
+
+  no_buzzword_modern:
+    name: "Buzzword: modern"
+    regex: '\b[Mm]odern\b'
+    message: "Banned buzzword. Replace with a concrete property from your anchor recipe."
+    severity: warning
+
+  no_buzzword_sleek:
+    name: "Buzzword: sleek"
+    regex: '\b[Ss]leek\b'
+    message: "Banned buzzword."
+    severity: warning
+
+  no_buzzword_premium:
+    name: "Buzzword: premium"
+    regex: '\b[Pp]remium\b'
+    message: "Banned buzzword (unless this is literally a paywall tier name)."
+    severity: warning
+
+  no_buzzword_beautiful:
+    name: "Buzzword: beautiful"
+    regex: '\b[Bb]eautiful\b'
+    message: "Banned buzzword."
+    severity: warning
+
+  no_buzzword_elegant:
+    name: "Buzzword: elegant"
+    regex: '\b[Ee]legant\b'
+    message: "Banned buzzword."
+    severity: warning
+
+  no_buzzword_professional:
+    name: "Buzzword: professional"
+    regex: '\b[Pp]rofessional\b'
+    message: "Banned buzzword."
+    severity: warning
